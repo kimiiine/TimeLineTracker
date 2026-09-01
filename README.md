@@ -7,18 +7,6 @@ demo pic of output:
 <img width="2479" height="3508" alt="Timeline Tracker Generator_page-0001" src="https://github.com/user-attachments/assets/6dd2be06-4989-4606-94bc-ddbf0371be8b" />
 ---
 
-## Overview
-
-| Attribute | Specification |
-|---|---|
-| **Tech Stack** | Vanilla HTML5, CSS3, JavaScript |
-| **Dependencies** | None |
-| **Print Target** | Standard A4 Portrait (10mm x 15mm margins) |
-| **Capacity** | 30 days per page (up to 120 days total) |
-| **Hosting** | Static file / GitHub Pages compatible |
-
----
-
 ## Features
 
 * **Custom Date Range:** Select custom start and end dates with input validation.

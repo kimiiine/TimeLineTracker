@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeline Tracker Generator</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 10mm 15mm;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg-main: #f4f4f7;
+    --bg-toolbar: #ffffff;
+    --border-color: #ddd;
+    --text-color: #111;
+    --card-bg: #ffffff;
+    --card-text: #444;
+    --input-bg: #ffffff;
+    --input-border: #ccc;
+    --sub-btn-bg: #e2e8f0;
+    --sub-btn-text: #1e293b;
+    --github-color: #333333;
+    --github-hover: #000000;
+  }
+
+  body.dark-mode {
+    --bg-main: #0f172a;
+    --bg-toolbar: #1e293b;
+    --border-color: #334155;
+    --text-color: #f8fafc;
+    --card-bg: #1e293b;
+    --card-text: #cbd5e1;
+    --input-bg: #0f172a;
+    --input-border: #475569;
+    --sub-btn-bg: #334155;
+    --sub-btn-text: #f8fafc;
+    --github-color: #94a3b8;
+    --github-hover: #ffffff;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-color);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .toolbar {
+    background: var(--bg-toolbar);
+    padding: 30px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+  }
+
+  .toolbar label {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--text-color);
+  }
+
+  .toolbar input, .toolbar select {
+    padding: 6px 10px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text-color);
+    border-radius: 4px;
+    font-size: 13px;
+    height: 33px;
+  }
+
+  .btn {
+    padding: 0 14px;
+    height: 33px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+    transition: opacity 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .btn:hover { opacity: 0.85; }
+
+  .btn-sub {
+    background: var(--sub-btn-bg);
+    color: var(--sub-btn-text);
+    padding: 3px 6px;
+    height: auto;
+    font-size: 11px;
+    border-radius: 3px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 3px;
+    white-space: nowrap;
+    z-index: 5;
+  }
+
+  .btn-primary { background: #0066cc; color: white; }
+  .btn-print { background: #0066cc; color: white; }
+  .btn-theme { background: #64748b; color: white; }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .toolbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--github-color);
+    font-size: 13px;
+    font-weight: bold;
+    transition: color 0.15s ease;
+    cursor: pointer;
+  }
+
+  .github-link:hover {
+    color: var(--github-hover);
+  }
+
+  .github-link svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  .error-banner {
+    display: none;
+    max-width: 1400px;
+    margin: 16px auto 0 auto;
+    padding: 10px 16px;
+    background: #d1d1d1;
+    border: 1px solid #000000;
+    color: #000000;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  body.dark-mode .error-banner {
+    background: #3d3d3d;
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
+  .error-banner.visible {
+    display: block;
+  }
+
+  .workspace-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 28px;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .instructions-panel {
+    width: 280px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 18px 20px;
+    color: var(--card-text);
+    font-size: 13px;
+    line-height: 1.5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
+  }
+
+  .instructions-panel h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: var(--text-color);
+  }
+
+  .instructions-panel ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .instructions-panel li {
+    margin-bottom: 8px;
+  }
+
+  .pages-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    background: white;
+    color: black;
+    padding: 10mm 15mm;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .row {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+
+  .date-label {
+    width: 75px;
+    font-size: 11px;
+    font-weight: bold;
+    padding-bottom: 2px;
+    letter-spacing: 0.5px;
+    color: black;
+    flex-shrink: 0;
+  }
+
+  .timeline {
+    flex-grow: 1;
+    position: relative;
+    height: 22px;
+    border-bottom: 1.5px solid black;
+    margin-right: 10px;
+  }
+
+  .tick {
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    border-left: 1.5px solid black;
+  }
+
+  .tick-major { height: 8px; }
+  .tick-minor { height: 4px; }
+
+  .tick-label {
+    position: absolute;
+    bottom: 10px;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-weight: bold;
+    color: black;
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: 1100px) {
+    .workspace-layout {
+      flex-direction: column;
+      align-items: center;
+    }
+    .instructions-panel {
+      width: 210mm;
+      position: static;
+    }
+  }
+
+  @media print {
+    html, body {
+      background: white !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .toolbar, .instructions-panel, .error-banner {
+      display: none !important;
+    }
+
+    .workspace-layout, .pages-wrapper {
+      display: block !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+    }
+
+    .page {
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      height: 277mm !important; 
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      page-break-after: always !important;
+      break-after: page !important;
+    }
+
+    .page:last-child {
+      page-break-after: auto !important;
+      break-after: auto !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <div class="field-group">
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate">
+    </div>
+
+    <div class="field-group">
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate">
+      <button 
+        class="btn btn-sub" 
+        title="add exactly 30 days starting from the chosen start date"
+        onclick="autoAdd30Days()">
+        auto +30 day
+      </button>
+    </div>
+
+    <div class="field-group">
+      <label for="timeFormat">Time Format:</label>
+      <select id="timeFormat" onchange="generateTracker()">
+        <option value="12h">12-Hour (12 am / 12 pm)</option>
+        <option value="24h">24-Hour Military (00 / 24)</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="generateTracker()">Generate</button>
+      <button class="btn btn-print" onclick="window.print()">Print / PDF</button>
+    </div>
+
+    <div class="toolbar-right">
+      <a class="github-link" href="https://github.com/kimiiine" target="_blank" rel="noopener noreferrer" title="View Source on GitHub">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        GitHub
+      </a>
+      <button class="btn btn-theme" onclick="toggleDarkMode()" id="themeBtn">Dark theme</button>
+    </div>
+  </div>
+
+  <div class="error-banner" id="errorBanner"></div>
+
+  <div class="workspace-layout">
+    <aside class="instructions-panel">
+      <h3>Instructions:</h3>
+      <ul>
+        <li>Select a starting date and an end date, you can use the <strong>auto +30 day</strong> button to quickly fill a monthly sheet.</li>
+        <li>A 30 day sheet will perfectly fit an A4 page, while day ranges exceeding 30 days may have to paginate across multiple A4 sheets. The maximum range is 120 days.</li>
+        <li>To print, click <strong>Generate</strong>, followed by <strong>Print / PDF</strong>, set destination to your printer or "Save as PDF", and set margins to "Default".</li>
+      </ul>
+    </aside>
+
+    <main class="pages-wrapper" id="pages-container"></main>
+  </div>
+
+  <script>
+    const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const MAX_RANGE_DAYS = 120;
+    const PAGE_SIZE = 30;
+    const PAGE_CONTENT_HEIGHT_MM = 277; 
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      document.getElementById('themeBtn').innerText = isDark ? 'Light theme' : 'Dark theme';
+    }
+
+    function toLocalISODate(date) {
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function formatDate(date) {
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const day = dayNames[date.getDay()];
+      return `${mm}/${dd} ${day}`;
+    }
+
+    function showError(message) {
+      const banner = document.getElementById('errorBanner');
+      banner.innerText = message;
+      banner.classList.add('visible');
+    }
+
+    function clearError() {
+      const banner = document.getElementById('errorBanner');
+      banner.innerText = '';
+      banner.classList.remove('visible');
+    }
+
+    function autoAdd30Days() {
+      const startVal = document.getElementById('startDate').value;
+      if (!startVal) return;
+      
+      const start = new Date(startVal + "T00:00:00");
+      const end = new Date(start);
+      end.setDate(start.getDate() + 29);
+      
+      document.getElementById('endDate').value = toLocalISODate(end);
+      generateTracker();
+    }
+
+    function formatHour(hour, mode) {
+      if (mode === '24h') {
+        return String(hour).padStart(2, '0');
+      }
+      let h = hour === 0 ? 12 : (hour > 12 ? hour - 12 : hour);
+      let ampm = hour < 12 ? 'am' : 'pm';
+      return `${h} ${ampm}`;
+    }
+
+    function createTimelineRow(dateObj, timeMode, rowHeightMm) {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.style.height = rowHeightMm + 'mm';
+
+      const label = document.createElement('div');
+      label.className = 'date-label';
+      label.innerText = formatDate(dateObj);
+      row.appendChild(label);
+
+      const timeline = document.createElement('div');
+      timeline.className = 'timeline';
+
+      for (let i = 0; i <= 24; i++) {
+        const isMajor = i % 2 === 0;
+        
+        const tick = document.createElement('div');
+        tick.className = 'tick ' + (isMajor ? 'tick-major' : 'tick-minor');
+        tick.style.left = (i * (100 / 24)) + '%';
+        timeline.appendChild(tick);
+
+        if (isMajor && i < 24) {
+          const tickLabel = document.createElement('div');
+          tickLabel.className = 'tick-label';
+          tickLabel.innerText = formatHour(i, timeMode);
+          tickLabel.style.left = (i * (100 / 24)) + '%';
+          timeline.appendChild(tickLabel);
+        }
+      }
+      row.appendChild(timeline);
+      return row;
+    }
+
+    function generateTracker() {
+      const startVal = document.getElementById('startDate').value;
+      const endVal = document.getElementById('endDate').value;
+      const timeMode = document.getElementById('timeFormat').value;
+
+      const container = document.getElementById('pages-container');
+      container.innerHTML = '';
+
+      if (!startVal || !endVal) return;
+
+      const startDate = new Date(startVal + "T00:00:00");
+      const endDate = new Date(endVal + "T00:00:00");
+
+      if (endDate < startDate) {
+        showError('End date must be on or after the start date. Please adjust your dates.');
+        return;
+      }
+
+      const allDates = [];
+      let cur = new Date(startDate);
+      while (cur <= endDate) {
+        allDates.push(new Date(cur));
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      if (allDates.length > MAX_RANGE_DAYS) {
+        showError(`Range too large: ${allDates.length} days selected, maximum is ${MAX_RANGE_DAYS} days. Please choose a shorter range.`);
+        return;
+      }
+
+      clearError();
+
+      for (let i = 0; i < allDates.length; i += PAGE_SIZE) {
+        const chunk = allDates.slice(i, i + PAGE_SIZE);
+        const page = document.createElement('div');
+        page.className = 'page';
+        const rowHeightMm = PAGE_CONTENT_HEIGHT_MM / chunk.length;
+        chunk.forEach(d => page.appendChild(createTimelineRow(d, timeMode, rowHeightMm)));
+        container.appendChild(page);
+      }
+    }
+
+    const today = new Date();
+    document.getElementById('startDate').value = toLocalISODate(today);
+  </script>
+</body>
+</html>

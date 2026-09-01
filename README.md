@@ -10,9 +10,11 @@ what the generated output looks like:
 an example of one of my highlighted and annotated printed sheets:
 
 <img width="4960" height="7014" alt="scan" src="https://github.com/user-attachments/assets/7dccf10f-1851-40c4-aa3b-ac5646227f43" />
+
 ---
-you can access the webpage at:
+## you can access the webpage at:
 https://kimiiine.github.io/TimeLineTracker/
+
 ---
 
 ## Features

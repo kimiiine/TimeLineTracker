@@ -3,6 +3,9 @@
 A lightweight, zero-dependency web utility that generates printable 24-hour daily timeline trackers calibrated for standard A4 paper.
 
 ---
+demo pic of output:
+<img width="2479" height="3508" alt="Timeline Tracker Generator_page-0001" src="https://github.com/user-attachments/assets/6dd2be06-4989-4606-94bc-ddbf0371be8b" />
+---
 
 ## Overview
 

@@ -1,26 +1,26 @@
-Daily Timeline Tracker Generator
-A lightweight, zero-dependency web application that generates printable 24-hour daily timeline tracker sheets calibrated for standard A4 paper.
+# Daily Timeline Tracker Generator
 
-Features
-Custom Date Ranges: Select any start and end date up to a 120-day maximum.
+A lightweight, zero-dependency web utility that generates printable 24-hour daily timeline trackers calibrated for standard A4 paper.
 
-Auto +30 Days: Instantly fills a 30-day window from the selected start date.
+---
 
-Time Formats: Toggle between 12-hour (12 am / 12 pm) and 24-hour military time (00 / 24).
+## Overview
 
-Print-to-A4 Ready: Calibrated to fit 30 rows per page with automatic multi-page pagination for larger ranges.
+| Attribute | Specification |
+|---|---|
+| **Tech Stack** | Vanilla HTML5, CSS3, JavaScript |
+| **Dependencies** | None |
+| **Print Target** | Standard A4 Portrait (10mm x 15mm margins) |
+| **Capacity** | 30 days per page (up to 120 days total) |
+| **Hosting** | Static file / GitHub Pages compatible |
 
-Dark / Light Theme: Interface theme toggle that preserves clean white styling for print outputs.
+---
 
-Pure Client-Side: Single-file HTML/CSS/JS with zero dependencies, suitable for static hosting like GitHub Pages.
+## Features
 
-Usage
-Open index.html in any modern web browser.
-
-Choose a Start Date and an End Date (or click auto +30 day).
-
-Select your preferred Time Format.
-
-Click Generate to render the sheets.
-
-Click Print / PDF (or press Ctrl+P / Cmd+P), choose your printer or "Save as PDF", and keep margins set to Default.
+* **Custom Date Range:** Select custom start and end dates with input validation.
+* **Auto +30 Days:** Set a 30-day range starting from the selected start date with one click.
+* **Time Formats:** Switch between 12-hour (`12 am` / `12 pm`) and 24-hour (`00` / `24`) notations.
+* **A4 Print Engine:** Automatic page breaks and row-height scaling for 30 rows per sheet.
+* **Theme Switching:** Dark and light mode interface with printer styles forced to black-and-white.
+* **Print CSS Integration:** Uses native border rendering so ticks print without requiring background graphics enabled.

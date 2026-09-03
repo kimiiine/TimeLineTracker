@@ -51,11 +51,13 @@
     background: var(--bg-main);
     color: var(--text-color);
     transition: background-color 0.2s ease, color 0.2s ease;
+    overflow-x: hidden;
   }
 
+  /* Toolbar Base */
   .toolbar {
     background: var(--bg-toolbar);
-    padding: 30px 20px;
+    padding: 16px 20px;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     gap: 16px;
@@ -162,7 +164,7 @@
   .error-banner {
     display: none;
     max-width: 1400px;
-    margin: 16px auto 0 auto;
+    margin: 16px 20px 0 20px;
     padding: 10px 16px;
     background: #d1d1d1;
     border: 1px solid #000000;
@@ -182,6 +184,7 @@
     display: block;
   }
 
+  /* Desktop Workspace Layout */
   .workspace-layout {
     display: flex;
     justify-content: center;
@@ -192,7 +195,7 @@
     margin: 0 auto;
   }
 
-  /* Side Panel (Intro + Instructions) */
+  /* Side Panel */
   .side-panel {
     width: 300px;
     display: flex;
@@ -238,11 +241,16 @@
     margin-bottom: 8px;
   }
 
+  /* Preview Container & A4 Pages */
   .pages-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 24px;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 12px;
   }
 
   .page {
@@ -255,6 +263,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    flex-shrink: 0;
   }
 
   .row {
@@ -303,17 +312,81 @@
     white-space: nowrap;
   }
 
-  @media screen and (max-width: 1100px) {
+  /* Medium Tablet Screen (<= 1024px) */
+  @media screen and (max-width: 1024px) {
     .workspace-layout {
       flex-direction: column;
       align-items: center;
+      gap: 20px;
+      padding: 16px;
     }
     .side-panel {
-      width: 210mm;
+      width: 100%;
+      max-width: 794px; /* Matches 210mm width */
       position: static;
     }
   }
 
+  /* Mobile Screens (<= 768px) */
+  @media screen and (max-width: 768px) {
+    .toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .field-group {
+      width: 100%;
+    }
+
+    .toolbar input, .toolbar select {
+      width: 100%;
+    }
+
+    /* Keep +30 button tidy underneath on mobile */
+    .btn-sub {
+      position: static;
+      margin-top: 4px;
+      align-self: flex-start;
+      display: inline-block;
+    }
+
+    .actions {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+    }
+
+    .actions .btn {
+      flex: 1;
+    }
+
+    .toolbar-right {
+      width: 100%;
+      margin-left: 0;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+    }
+
+    .workspace-layout {
+      padding: 12px;
+      width: 100%;
+    }
+
+    .side-panel {
+      width: 100%;
+    }
+
+    /* Enables smooth side-swiping on small mobile screens to view the whole A4 sheet */
+    .pages-wrapper {
+      width: 100%;
+      align-items: flex-start;
+    }
+  }
+
+  /* Exact A4 Print Stylesheet */
   @media print {
     html, body {
       background: white !important;
@@ -332,6 +405,7 @@
       padding: 0 !important;
       margin: 0 !important;
       width: 100% !important;
+      overflow: visible !important;
     }
 
     .page {
